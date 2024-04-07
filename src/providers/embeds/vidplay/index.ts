@@ -53,7 +53,7 @@ export const vidplayScraper = makeEmbed({
         {
           id: 'primary',
           type: 'hls',
-          playlist: `m3u8proxy.techygiraffe.workers.dev/?url=${encodeURIComponent(source)}&referer=${encodeURIComponent(ctx.url)}&origin=${encodeURIComponent(ctx.url)}`,
+          playlist: `https://m3u8proxy.techygiraffe.workers.dev/?url=${encodeURIComponent(source)}&referer=${encodeURIComponent(ctx.url)}&origin=${encodeURIComponent(ctx.url)}`,
           flags: [flags.CORS_ALLOWED],
           headers: {
             Referer: url.origin,

@@ -50,7 +50,7 @@ export const fileMoonScraper = makeEmbed({
         {
           id: 'primary',
           type: 'hls',
-          playlist: `m3u8proxy.techygiraffe.workers.dev/?url=${encodeURIComponent(file[1])}&referer=${encodeURIComponent(ctx.url)}&origin=${encodeURIComponent(ctx.url)}`,
+          playlist: `https://m3u8proxy.techygiraffe.workers.dev/?url=${encodeURIComponent(file[1])}&referer=${encodeURIComponent(ctx.url)}&origin=${encodeURIComponent(ctx.url)}`,
           flags: [],
           captions,
         },
