@@ -1,3 +1,4 @@
+import { flags } from '@/entrypoint/utils/targets';
 import { makeEmbed } from '@/providers/base';
 import { Caption, getCaptionTypeFromUrl, labelToLanguageCode } from '@/providers/captions';
 
@@ -52,8 +53,8 @@ export const vidplayScraper = makeEmbed({
         {
           id: 'primary',
           type: 'hls',
-          playlist: source,
-          flags: [],
+          playlist: `m3u8proxy.techygiraffe.workers.dev/?url=${encodeURIComponent(source)}&referer=${encodeURIComponent(ctx.url)}&origin=${encodeURIComponent(ctx.url)}`,
+          flags: [flags.CORS_ALLOWED],
           headers: {
             Referer: url.origin,
             Origin: url.origin,

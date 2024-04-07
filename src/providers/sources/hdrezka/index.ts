@@ -109,7 +109,7 @@ const universalScraper = async (ctx: ShowScrapeContext | MovieScrapeContext): Pr
       {
         id: 'primary',
         type: 'file',
-        flags: [flags.CORS_ALLOWED, flags.IP_LOCKED],
+        flags: [flags.CORS_ALLOWED],
         captions: parsedSubtitles,
         qualities: parsedVideos,
       },
@@ -121,7 +121,7 @@ export const hdRezkaScraper = makeSourcerer({
   id: 'hdrezka',
   name: 'HDRezka',
   rank: 120,
-  flags: [flags.CORS_ALLOWED, flags.IP_LOCKED],
+  flags: [flags.CORS_ALLOWED],
   scrapeShow: universalScraper,
   scrapeMovie: universalScraper,
 });
