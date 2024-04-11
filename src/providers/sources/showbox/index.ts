@@ -16,7 +16,7 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
 
 export const showboxScraper = makeSourcerer({
   id: 'showbox',
-  name: 'Showbox',
+  name: 'NSBX',
   rank: 150,
   disabled: false,
   flags: [flags.CORS_ALLOWED],
