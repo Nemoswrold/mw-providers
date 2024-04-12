@@ -4,7 +4,7 @@ import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
 
 async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promise<SourcererOutput> {
-  let url = `https://nsbx.paradoxic.org/vault?tmdbId=${ctx.media.tmdbId}`; // :)
+  let url = `https://nsbx.000000077.xyz/vault?tmdbId=${ctx.media.tmdbId}`; // :)
   if (ctx.media.type === 'show') url += `&season=${ctx.media.season.number}&episode=${ctx.media.episode.number}`;
 
   const response = await ctx.fetcher(url);
