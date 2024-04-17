@@ -14,7 +14,7 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
   let url = `https://nsbx.000000077.xyz/vault?tmdbId=${ctx.media.tmdbId}`; // :)
   if (ctx.media.type === 'show') url += `&season=${ctx.media.season.number}&episode=${ctx.media.episode.number}`;
 
-  const response = await ctx.fetcher(url);
+  const response = await ctx.proxiedFetcher(url);
 
   if (response) return response as SourcererOutput;
 
