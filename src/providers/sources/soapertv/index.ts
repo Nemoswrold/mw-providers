@@ -4,6 +4,7 @@ import { flags } from '@/entrypoint/utils/targets';
 import { Caption, labelToLanguageCode } from '@/providers/captions';
 import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
+import { hlsProxyUrl } from '@/utils/hlsproxy';
 
 import { InfoResponse } from './types';
 import { SourcererOutput, makeSourcerer } from '../../base';
@@ -11,12 +12,21 @@ import { SourcererOutput, makeSourcerer } from '../../base';
 const baseUrl = 'https://soaper.tv';
 
 const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext): Promise<SourcererOutput> => {
-  const searchResult = await ctx.proxiedFetcher('/search.html', {
+  const searchResult = await ctx.fetcher<string>(hlsProxyUrl, {
+    query: {
+      url: encodeURIComponent(
+        `${baseUrl}/search.html${new URLSearchParams({
+          keyword: ctx.media.title,
+        })}`,
+      ),
+    },
+  });
+  /* const searchResult = await ctx.proxiedFetcher('/search.html', {
     baseUrl,
     query: {
       keyword: ctx.media.title,
     },
-  });
+  }); */
   const searchResult$ = load(searchResult);
   let showLink = searchResult$('a')
     .filter((_, el) => searchResult$(el).text() === ctx.media.title)
@@ -26,7 +36,12 @@ const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext): Pr
   if (ctx.media.type === 'show') {
     const seasonNumber = ctx.media.season.number;
     const episodeNumber = ctx.media.episode.number;
-    const showPage = await ctx.proxiedFetcher(showLink, { baseUrl });
+    // const showPage = await ctx.proxiedFetcher(showLink, { baseUrl });
+    const showPage = await ctx.fetcher(hlsProxyUrl, {
+      query: {
+        url: `${baseUrl}${showLink}`,
+      },
+    });
     const showPage$ = load(showPage);
     const seasonBlock = showPage$('h4')
       .filter((_, el) => showPage$(el).text().trim().split(':')[0].trim() === `Season${seasonNumber}`)
@@ -37,7 +52,12 @@ const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext): Pr
     ).attr('href');
   }
   if (!showLink) throw new NotFoundError('Content not found');
-  const contentPage = await ctx.proxiedFetcher(showLink, { baseUrl });
+  // const contentPage = await ctx.proxiedFetcher(showLink, { baseUrl });
+  const contentPage = await ctx.fetcher(hlsProxyUrl, {
+    query: {
+      url: `${baseUrl}${showLink}`,
+    },
+  });
   const contentPage$ = load(contentPage);
 
   const pass = contentPage$('#hId').attr('value');
@@ -52,8 +72,18 @@ const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext): Pr
   formData.append('server', '0');
 
   const infoEndpoint = ctx.media.type === 'show' ? '/home/index/getEInfoAjax' : '/home/index/getMInfoAjax';
-  const streamRes = await ctx.proxiedFetcher<string>(infoEndpoint, {
+  /* const streamRes = await ctx.proxiedFetcher<string>(infoEndpoint, {
     baseUrl,
+    method: 'POST',
+    body: formData,
+    headers: {
+      referer: `${baseUrl}${showLink}`,
+    },
+  }); */
+  const streamRes = await ctx.fetcher(hlsProxyUrl, {
+    query: {
+      url: `${baseUrl}${infoEndpoint}`,
+    },
     method: 'POST',
     body: formData,
     headers: {
@@ -90,7 +120,7 @@ const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext): Pr
     stream: [
       {
         id: 'primary',
-        playlist: streamResJson.val,
+        playlist: `${hlsProxyUrl}/?url=${encodeURIComponent(streamResJson.val)}`,
         type: 'hls',
         flags: [flags.IP_LOCKED],
         captions,
@@ -99,7 +129,7 @@ const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext): Pr
         ? [
             {
               id: 'backup',
-              playlist: streamResJson.val_bak,
+              playlist: `${hlsProxyUrl}/?url=${encodeURIComponent(streamResJson.val_bak)}`,
               type: 'hls' as const,
               flags: [flags.IP_LOCKED],
               captions,
