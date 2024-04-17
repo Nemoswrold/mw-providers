@@ -1,11 +1,9 @@
 import { load } from 'cheerio';
 import { unpack } from 'unpacker';
 
-import { hlsProxyUrl } from '@/utils/hlsproxy';
 import { SubtitleResult } from './types';
 import { makeEmbed } from '../../base';
 import { Caption, getCaptionTypeFromUrl, labelToLanguageCode } from '../../captions';
-import { flags } from '@/entrypoint/utils/targets';
 
 const evalCodeRegex = /eval\((.*)\)/g;
 const fileRegex = /file:"(.*?)"/g;
@@ -15,9 +13,9 @@ export const fileMoonScraper = makeEmbed({
   name: 'Filemoon',
   rank: 300,
   scrape: async (ctx) => {
-    const embedRes = await ctx.fetcher<string>(hlsProxyUrl, {
-      query: {
-        url: encodeURIComponent(ctx.url),
+    const embedRes = await ctx.proxiedFetcher<string>(ctx.url, {
+      headers: {
+        referer: ctx.url,
       },
     });
     const embedHtml = load(embedRes);
@@ -52,8 +50,8 @@ export const fileMoonScraper = makeEmbed({
         {
           id: 'primary',
           type: 'hls',
-          playlist: `${hlsProxyUrl}?url=${encodeURIComponent(file[1])}`,
-          flags: [flags.CORS_ALLOWED],
+          playlist: file[1],
+          flags: [],
           captions,
         },
       ],
