@@ -29,7 +29,7 @@ export async function validatePlayableStream(
   if (SKIP_VALIDATION_CHECK_IDS.includes(sourcererId)) return stream;
 
   if (stream.type === 'hls') {
-    const result = await ops.proxiedFetcher.full(stream.playlist, {
+    const result = await ops.fetcher.full(stream.playlist, {
       method: 'GET',
       headers: {
         ...stream.preferredHeaders,
@@ -42,7 +42,7 @@ export async function validatePlayableStream(
   if (stream.type === 'file') {
     const validQualitiesResults = await Promise.all(
       Object.values(stream.qualities).map((quality) =>
-        ops.proxiedFetcher.full(quality.url, {
+        ops.fetcher.full(quality.url, {
           method: 'GET',
           headers: {
             ...stream.preferredHeaders,
