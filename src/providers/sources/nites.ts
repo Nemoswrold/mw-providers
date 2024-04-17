@@ -1,5 +1,6 @@
 import { load } from 'cheerio';
 
+import { flags } from '@/entrypoint/utils/targets';
 import { SourcererOutput, makeSourcerer } from '@/providers/base';
 import { compareMedia } from '@/utils/compare';
 import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
@@ -73,7 +74,7 @@ export const nitesScraper = makeSourcerer({
   id: 'nites',
   name: 'Nites',
   rank: 90,
-  flags: [],
+  flags: [flags.CORS_ALLOWED],
   scrapeMovie: comboScraper,
   scrapeShow: comboScraper,
 });

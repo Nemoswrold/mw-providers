@@ -53,7 +53,10 @@ function parseVideoLinks(inputString?: string): FileBasedStream['qualities'] {
       const quality = numericQualityMatch ? numericQualityMatch[1] : 'Unknown';
 
       const validQuality = getValidQualityFromString(quality);
-      result[validQuality] = { type: 'mp4', url: `https://mw-simpleproxy.techygiraffe.workers.dev/?destination=${encodeURIComponent(mp4Url)},`};
+      result[validQuality] = {
+        type: 'mp4',
+        url: `https://mw-simpleproxy.techygiraffe.workers.dev/?destination=${encodeURIComponent(mp4Url)},`,
+      };
     }
   });
 

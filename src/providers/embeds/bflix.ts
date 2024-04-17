@@ -1,6 +1,7 @@
 import { unpack } from 'unpacker';
 
 import { makeEmbed } from '@/providers/base';
+import { hlsProxyUrl } from '@/utils/hlsproxy';
 
 const evalCodeRegex = /eval\((.*)\)/g;
 const mp4Regex = /https?:\/\/.*\.mp4/;
@@ -29,7 +30,7 @@ export const bflixScraper = makeEmbed({
           qualities: {
             unknown: {
               type: 'mp4',
-              url: file[0],
+              url: `${hlsProxyUrl}/?url=${encodeURIComponent(file[0])}&referer=https://bflix.gs/`,
             },
           },
           headers: {

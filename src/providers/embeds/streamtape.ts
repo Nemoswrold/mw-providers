@@ -1,5 +1,6 @@
 import { flags } from '@/entrypoint/utils/targets';
 import { makeEmbed } from '@/providers/base';
+import { hlsProxyUrl } from '@/utils/hlsproxy';
 
 export const streamtapeScraper = makeEmbed({
   id: 'streamtape',
@@ -21,16 +22,13 @@ export const streamtapeScraper = makeEmbed({
         {
           id: 'primary',
           type: 'file',
-          flags: [flags.CORS_ALLOWED, flags.IP_LOCKED],
+          flags: [flags.CORS_ALLOWED],
           captions: [],
           qualities: {
             unknown: {
               type: 'mp4',
-              url,
+              url: `${hlsProxyUrl}/?url=${encodeURIComponent(url)}`,
             },
-          },
-          headers: {
-            Referer: 'https://streamtape.com',
           },
         },
       ],
