@@ -15,7 +15,7 @@ const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext): Pr
   const searchResult = await ctx.fetcher<string>(hlsProxyUrl, {
     query: {
       url: encodeURIComponent(
-        `${baseUrl}/search.html${new URLSearchParams({
+        `${baseUrl}/search.html?${new URLSearchParams({
           keyword: ctx.media.title,
         })}`,
       ),
