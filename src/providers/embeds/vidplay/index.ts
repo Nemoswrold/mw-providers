@@ -1,5 +1,7 @@
+import { flags } from '@/entrypoint/utils/targets';
 import { makeEmbed } from '@/providers/base';
 import { Caption, getCaptionTypeFromUrl, labelToLanguageCode } from '@/providers/captions';
+import { hlsProxy } from '@/utils/hlsproxy';
 
 import { getFileUrl } from './common';
 import { SubtitleResult, ThumbnailTrack, VidplaySourceResponse } from './types';
@@ -52,12 +54,14 @@ export const vidplayScraper = makeEmbed({
         {
           id: 'primary',
           type: 'hls',
-          playlist: source,
+          /* playlist: source,
           flags: [],
           headers: {
             Referer: url.origin,
             Origin: url.origin,
-          },
+          }, */
+          playlist: `${hlsProxy}${encodeURIComponent(source)}&referer=${url.origin}`,
+          flags: [flags.CORS_ALLOWED],
           captions,
           thumbnailTrack,
         },
