@@ -4,6 +4,7 @@ import { flags } from '@/entrypoint/utils/targets';
 import { Caption, labelToLanguageCode } from '@/providers/captions';
 import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
+import { hlsProxy } from '@/utils/hlsproxy';
 
 import { InfoResponse } from './types';
 import { SourcererOutput, makeSourcerer } from '../../base';
@@ -52,13 +53,17 @@ const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext): Pr
   formData.append('server', '0');
 
   const infoEndpoint = ctx.media.type === 'show' ? '/home/index/getEInfoAjax' : '/home/index/getMInfoAjax';
-  const streamRes = await ctx.proxiedFetcher<string>(infoEndpoint, {
+  /* const streamRes = await ctx.proxiedFetcher<string>(infoEndpoint, {
     baseUrl,
     method: 'POST',
     body: formData,
     headers: {
       referer: `${baseUrl}${showLink}`,
     },
+  }); */
+  const streamRes = await ctx.fetcher(`${hlsProxy}${baseUrl}${infoEndpoint}&referer=${baseUrl}${showLink}`, {
+    method: 'POST',
+    body: formData,
   });
 
   const streamResJson: InfoResponse = JSON.parse(streamRes);
@@ -88,7 +93,7 @@ const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext): Pr
   return {
     embeds: [],
     stream: [
-      {
+      /* {
         id: 'primary',
         playlist: streamResJson.val,
         type: 'hls',
@@ -105,6 +110,24 @@ const universalScraper = async (ctx: MovieScrapeContext | ShowScrapeContext): Pr
               captions,
             },
           ]
+        : []), */
+      {
+        id: 'primary',
+        playlist: `${hlsProxy}${encodeURIComponent(streamResJson.val)}`,
+        type: 'hls',
+        flags: [flags.IP_LOCKED],
+        captions,
+      },
+      ...(streamResJson.val_bak
+        ? [
+            {
+              id: 'backup',
+              playlist: `${hlsProxy}${encodeURIComponent(streamResJson.val_bak)}`,
+              type: 'hls' as const,
+              flags: [flags.IP_LOCKED],
+              captions,
+            },
+          ]
         : []),
     ],
   };
@@ -114,7 +137,7 @@ export const soaperTvScraper = makeSourcerer({
   id: 'soapertv',
   name: 'SoaperTV',
   rank: 115,
-  flags: [flags.IP_LOCKED],
+  flags: [flags.CORS_ALLOWED],
   scrapeMovie: universalScraper,
   scrapeShow: universalScraper,
 });
