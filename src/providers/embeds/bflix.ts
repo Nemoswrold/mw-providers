@@ -1,6 +1,8 @@
 import { unpack } from 'unpacker';
 
+import { flags } from '@/entrypoint/utils/targets';
 import { makeEmbed } from '@/providers/base';
+import { hlsProxy } from '@/utils/hlsproxy';
 
 const evalCodeRegex = /eval\((.*)\)/g;
 const mp4Regex = /https?:\/\/.*\.mp4/;
@@ -24,17 +26,17 @@ export const bflixScraper = makeEmbed({
         {
           id: 'primary',
           type: 'file',
-          flags: [],
+          flags: [flags.CORS_ALLOWED],
           captions: [],
           qualities: {
             unknown: {
               type: 'mp4',
-              url: file[0],
+              url: `${hlsProxy}${file[0]}&referer=https://bflix.gs/'`,
             },
           },
-          headers: {
+          /* headers: {
             Referer: 'https://bflix.gs/',
-          },
+          }, */
         },
       ],
     };
