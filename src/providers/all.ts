@@ -21,6 +21,7 @@ import { remotestreamScraper } from '@/providers/sources/remotestream';
 import { showboxScraper } from '@/providers/sources/showbox/index';
 import { tugaflixScraper } from '@/providers/sources/tugaflix';
 import { vidsrcScraper } from '@/providers/sources/vidsrc/index';
+import { vidSrcProScraper } from '@/providers/sources/vidsrcpro';
 import { zoechipScraper } from '@/providers/sources/zoechip';
 
 import { bflixScraper } from './embeds/bflix';
@@ -63,6 +64,7 @@ export function gatherAllSources(): Array<Sourcerer> {
     smashyStreamScraper,
     ridooMoviesScraper,
     vidSrcToScraper,
+    vidSrcProScraper,
     nepuScraper,
     goojaraScraper,
     hdRezkaScraper,
