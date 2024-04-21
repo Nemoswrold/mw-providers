@@ -60,7 +60,7 @@ export const vidplayScraper = makeEmbed({
             Referer: url.origin,
             Origin: url.origin,
           }, */
-          playlist: `${hlsProxy}${encodeURIComponent(source)}&referer=${url.origin}`,
+          playlist: `${hlsProxy}${encodeURIComponent(source)}&referer=${url.origin}&Origin=${url.origin}`,
           flags: [flags.CORS_ALLOWED],
           captions,
           thumbnailTrack,
