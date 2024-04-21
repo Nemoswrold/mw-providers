@@ -2,12 +2,13 @@ import { flags } from '@/entrypoint/utils/targets';
 import { makeEmbed } from '@/providers/base';
 import { EmbedScrapeContext } from '@/utils/context';
 import { NotFoundError } from '@/utils/errors';
+import { hlsProxy } from '@/utils/hlsproxy';
 
 import { getDecryptedId } from './common';
 
 // Method found by atpn
 async function getVideowlUrlStream(ctx: EmbedScrapeContext, decryptedId: string) {
-  const sharePage = await ctx.proxiedFetcher<string>('https://cloud.mail.ru/public/uaRH/2PYWcJRpH');
+  const sharePage = await ctx.fetcher<string>(`${hlsProxy}https://cloud.mail.ru/public/uaRH/2PYWcJRpH`);
   const regex = /"videowl_view":\{"count":"(\d+)","url":"([^"]+)"\}/g;
   const videowlUrl = regex.exec(sharePage)?.[2];
 
@@ -34,9 +35,9 @@ export const warezcdnembedHlsScraper = makeEmbed({
         {
           id: 'primary',
           type: 'hls',
-          flags: [flags.IP_LOCKED],
+          flags: [flags.CORS_ALLOWED],
           captions: [],
-          playlist: streamUrl,
+          playlist: `${hlsProxy}${encodeURIComponent(streamUrl)}`,
         },
       ],
     };
