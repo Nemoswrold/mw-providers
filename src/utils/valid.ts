@@ -29,6 +29,17 @@ export async function validatePlayableStream(
   if (SKIP_VALIDATION_CHECK_IDS.includes(sourcererId)) return stream;
 
   if (stream.type === 'hls') {
+    if (stream.playlist.includes('/corsproxy/')) {
+      const result = await ops.fetcher.full(stream.playlist, {
+        method: 'GET',
+        headers: {
+          ...stream.preferredHeaders,
+          ...stream.headers,
+        },
+      });
+      if (result.statusCode < 200 || result.statusCode >= 400) return null;
+      return stream;
+    }
     const result = await ops.proxiedFetcher.full(stream.playlist, {
       method: 'GET',
       headers: {
