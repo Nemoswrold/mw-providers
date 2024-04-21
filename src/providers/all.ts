@@ -11,6 +11,8 @@ import { streamsbScraper } from '@/providers/embeds/streamsb';
 import { upcloudScraper } from '@/providers/embeds/upcloud';
 import { upstreamScraper } from '@/providers/embeds/upstream';
 import { vidsrcembedScraper } from '@/providers/embeds/vidsrc';
+import { jettScraper } from '@/providers/embeds/vidsrcpro/jett';
+import { viperScraper } from '@/providers/embeds/vidsrcpro/viper';
 import { vTubeScraper } from '@/providers/embeds/vtube';
 import { flixhqScraper } from '@/providers/sources/flixhq/index';
 import { goMoviesScraper } from '@/providers/sources/gomovies/index';
@@ -97,6 +99,8 @@ export function gatherAllEmbeds(): Array<Embed> {
     fileMoonScraper,
     fileMoonMp4Scraper,
     vidplayScraper,
+    viperScraper,
+    jettScraper,
     wootlyScraper,
     doodScraper,
     streamvidScraper,
