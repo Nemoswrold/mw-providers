@@ -1,3 +1,5 @@
+/* eslint import/no-extraneous-dependencies: ["error", {"devDependencies": true}] */
+
 import { program } from 'commander';
 import dotenv from 'dotenv';
 import { prompt } from 'enquirer';
@@ -35,8 +37,11 @@ const sources = [...sourceScrapers, ...embedScrapers];
 function joinMediaTypes(mediaTypes: string[] | undefined) {
   if (mediaTypes) {
     const formatted = mediaTypes
-      .map((type: string) => `${type[0].toUpperCase() + type.substring(1).toLowerCase()}s`)
+      .map((type: string) => {
+        return `${type[0].toUpperCase() + type.substring(1).toLowerCase()}s`;
+      })
       .join(' / ');
+
     return `(${formatted})`;
   }
   return ''; // * Embed sources pass through here too
