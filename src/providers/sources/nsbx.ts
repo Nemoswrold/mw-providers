@@ -19,12 +19,28 @@ async function comboScraper(ctx: ShowScrapeContext | MovieScrapeContext): Promis
     query.episode = ctx.media.episode.number.toString();
   }
 
-  const result = await ctx.fetcher(`https://api.nsbx.ru/search?query=${encodeURIComponent(JSON.stringify(query))}`);
+  const searchUrl = `https://nsbx.ru/api/search?query=${encodeURIComponent(JSON.stringify(query))}`;
+  const result = await ctx.fetcher(searchUrl);
 
-  if (result.embeds.length === 0) throw new NotFoundError('No watchable item found');
+  if (!result || result.embeds.length === 0) {
+    throw new NotFoundError('No watchable item found');
+  }
+
+  const embeds: SourcererEmbed[] = [];
+  for (const embed of result.embeds) {
+    const streamUrl = `https://nsbx.ru/api/source/${embed.embedId}/?resourceId=${embed.resourceId}`;
+    const streamResult = await ctx.fetcher(streamUrl);
+
+    for (const stream of streamResult.streams) {
+      embeds.push({
+        embedId: embed.embedId,
+        url: stream.url,
+      });
+    }
+  }
 
   return {
-    embeds: result.embeds as SourcererEmbed[],
+    embeds,
   };
 }
 
